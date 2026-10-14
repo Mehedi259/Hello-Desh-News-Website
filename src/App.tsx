@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Header } from './components/common/Header'
 import { Footer } from './components/common/Footer'
 import { SearchModal } from './components/common/SearchModal'
+import { MobileBottomNav } from './components/common/MobileBottomNav'
+import { InformationModal } from './components/common/InformationModal'
 import { HomePage } from './pages/HomePage'
 import { NewsDetail } from './components/news/NewsDetail'
 import { CategoryPage } from './pages/CategoryPage'
@@ -10,7 +12,8 @@ import { useNews } from './context/NewsContext'
 import { CheckCircle2 } from 'lucide-react'
 
 export const App: React.FC = () => {
-  const { currentView, toastMessage, setIsSearchOpen } = useNews()
+  const { currentView, toastMessage, setIsSearchOpen, showToast } = useNews()
+  const [infoModalType, setInfoModalType] = useState<'about' | 'ads' | 'privacy' | 'contact' | null>(null)
 
   // Support Ctrl+K / Cmd+K hotkey for search
   useEffect(() => {
@@ -35,8 +38,18 @@ export const App: React.FC = () => {
         {currentView === 'bookmarks' && <BookmarksPage />}
       </main>
 
-      <Footer />
+      <Footer onOpenModal={(t) => setInfoModalType(t)} />
       <SearchModal />
+
+      {/* App-like Mobile Bottom Navigation */}
+      <MobileBottomNav onOpenInfoModal={(t) => setInfoModalType(t)} />
+
+      {/* Shared Informational Modals (About, Ads, Privacy, Contact) */}
+      <InformationModal
+        type={infoModalType}
+        onClose={() => setInfoModalType(null)}
+        showToast={showToast}
+      />
 
       {/* Floating Toast Message */}
       {toastMessage && (

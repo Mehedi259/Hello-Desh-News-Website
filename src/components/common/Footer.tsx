@@ -3,9 +3,21 @@ import { FaFacebookF, FaYoutube, FaTwitter, FaInstagram } from 'react-icons/fa'
 import { useNews } from '../../context/NewsContext'
 import { InformationModal } from './InformationModal'
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenModal?: (type: 'about' | 'ads' | 'privacy' | 'contact') => void
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenModal }) => {
   const { navigateToHome, showToast } = useNews()
-  const [modalType, setModalType] = useState<'about' | 'ads' | 'privacy' | 'contact' | null>(null)
+  const [internalModalType, setInternalModalType] = useState<'about' | 'ads' | 'privacy' | 'contact' | null>(null)
+
+  const handleOpen = (type: 'about' | 'ads' | 'privacy' | 'contact') => {
+    if (onOpenModal) {
+      onOpenModal(type)
+    } else {
+      setInternalModalType(type)
+    }
+  }
 
   return (
     <>
@@ -19,10 +31,10 @@ export const Footer: React.FC = () => {
 
             {/* Quick links */}
             <ul className="footer-nav-links">
-              <li onClick={() => setModalType('about')}>আমাদের সম্পর্কে</li>
-              <li onClick={() => setModalType('ads')}>বিজ্ঞাপন</li>
-              <li onClick={() => setModalType('privacy')}>গোপনীয়তা নীতি</li>
-              <li onClick={() => setModalType('contact')}>যোগাযোগ</li>
+              <li onClick={() => handleOpen('about')}>আমাদের সম্পর্কে</li>
+              <li onClick={() => handleOpen('ads')}>বিজ্ঞাপন</li>
+              <li onClick={() => handleOpen('privacy')}>গোপনীয়তা নীতি</li>
+              <li onClick={() => handleOpen('contact')}>যোগাযোগ</li>
             </ul>
 
             {/* Social icons */}
@@ -73,12 +85,14 @@ export const Footer: React.FC = () => {
         </div>
       </footer>
 
-      {/* Information Modal */}
-      <InformationModal
-        type={modalType}
-        onClose={() => setModalType(null)}
-        showToast={showToast}
-      />
+      {/* Information Modal (fallback if not handled by parent) */}
+      {!onOpenModal && (
+        <InformationModal
+          type={internalModalType}
+          onClose={() => setInternalModalType(null)}
+          showToast={showToast}
+        />
+      )}
     </>
   )
 }
