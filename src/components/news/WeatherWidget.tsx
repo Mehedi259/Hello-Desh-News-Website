@@ -2,39 +2,52 @@ import React, { useState } from 'react'
 import { MapPin, CloudSun, Droplets, Wind, Sun, CloudRain } from 'lucide-react'
 
 const CITIES = [
-  { city: 'ঢাকা', temp: 32, condition: 'আংশিক মেঘলা', humidity: 68, wind: 'বাতাস ১২ কিমি/ঘ.', icon: 'sun-cloud' },
-  { city: 'চট্টগ্রাম', temp: 30, condition: 'রৌদ্রোজ্জ্বল', humidity: 72, wind: 'বাতাস ১৪ কিমি/ঘ.', icon: 'sun' },
-  { city: 'সিলেট', temp: 28, condition: 'হালকা বৃষ্টি', humidity: 82, wind: 'বাতাস ৯ কিমি/ঘ.', icon: 'rain' },
-  { city: 'রাজশাহী', temp: 34, condition: 'পরিষ্কার আকাশ', humidity: 58, wind: 'বাতাস ১০ কিমি/ঘ.', icon: 'sun' },
+  { city: 'ঢাকা', temp: 32, condition: 'আংশিক মেঘলা', humidity: 68, wind: '১২ কিমি/ঘ.', icon: 'sun-cloud' },
+  { city: 'চট্টগ্রাম', temp: 30, condition: 'রৌদ্রোজ্জ্বল', humidity: 72, wind: '১৪ কিমি/ঘ.', icon: 'sun' },
+  { city: 'সিলেট', temp: 28, condition: 'হালকা বৃষ্টি', humidity: 82, wind: '৯ কিমি/ঘ.', icon: 'rain' },
+  { city: 'রাজশাহী', temp: 34, condition: 'পরিষ্কার আকাশ', humidity: 58, wind: '১০ কিমি/ঘ.', icon: 'sun' },
 ]
 
 export const WeatherWidget: React.FC = () => {
-  const [cityIndex, setCityIndex] = useState(0)
-  const current = CITIES[cityIndex]
-
-  const nextCity = () => {
-    setCityIndex((prev) => (prev + 1) % CITIES.length)
-  }
+  const [selectedCity, setSelectedCity] = useState(0)
+  const current = CITIES[selectedCity]
 
   return (
     <div className="weather-card">
       <div className="weather-header">
-        <div
-          className="weather-city"
-          onClick={nextCity}
-          style={{ cursor: 'pointer', userSelect: 'none' }}
-          title="অন্য শহর দেখতে ক্লিক করুন"
-        >
+        <div className="weather-city">
           <MapPin size={15} color="var(--color-primary)" />
           <span>{current.city}</span>
-          <span style={{ fontSize: '11px', color: 'var(--color-primary)', marginLeft: '4px' }}>▼</span>
         </div>
         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>আবহাওয়া বার্তা</span>
       </div>
 
+      {/* City Switcher Tabs */}
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
+        {CITIES.map((c, idx) => (
+          <button
+            key={idx}
+            onClick={() => setSelectedCity(idx)}
+            style={{
+              padding: '2px 8px',
+              fontSize: '11px',
+              fontWeight: 600,
+              borderRadius: '9999px',
+              border: 'none',
+              background: selectedCity === idx ? 'var(--color-primary)' : 'rgba(255, 255, 255, 0.7)',
+              color: selectedCity === idx ? '#fff' : 'var(--text-secondary)',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            {c.city}
+          </button>
+        ))}
+      </div>
+
       <div className="weather-main">
         <div style={{ color: current.icon === 'rain' ? '#0284c7' : '#f59e0b' }}>
-          {current.icon === 'rain' ? <CloudRain size={40} /> : current.icon === 'sun' ? <Sun size={40} /> : <CloudSun size={40} />}
+          {current.icon === 'rain' ? <CloudRain size={38} /> : current.icon === 'sun' ? <Sun size={38} /> : <CloudSun size={38} />}
         </div>
         <div>
           <div className="weather-temp">{current.temp}°C</div>
@@ -50,7 +63,7 @@ export const WeatherWidget: React.FC = () => {
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <Wind size={12} color="#64748b" />
-            {current.wind}
+            বাতাস {current.wind}
           </span>
         </div>
       </div>
