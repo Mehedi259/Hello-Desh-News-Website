@@ -33,7 +33,7 @@ interface NewsContextType {
 const NewsContext = createContext<NewsContextType | undefined>(undefined)
 
 const STORAGE_KEYS = {
-  ARTICLES: 'hellodesh_articles',
+  ARTICLES: 'hellodesh_articles_v2',
   BOOKMARKS: 'hellodesh_bookmarks',
   COMMENTS: 'hellodesh_comments',
   SUBSCRIBERS: 'hellodesh_subscribers',
