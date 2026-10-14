@@ -1,0 +1,7 @@
+services:
+  web:
+    build: .
+    container_name: hello-desh-news-web
+    restart: always
+    ports:
+      - "3013:80"
