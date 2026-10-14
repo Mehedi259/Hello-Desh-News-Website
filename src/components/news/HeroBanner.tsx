@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { ArrowRight, Clock, Tag } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { ArrowRight, Clock, Tag, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useNews } from '../../context/NewsContext'
 import { NewsItem } from '../../types/news'
 
@@ -10,9 +10,28 @@ export const HeroBanner: React.FC = () => {
   const heroArticles = articles.filter((a) => a.isHero || a.isFeatured).slice(0, 3)
   const [currentIndex, setCurrentIndex] = useState(0)
 
+  // Auto advance hero carousel every 8 seconds
+  useEffect(() => {
+    if (heroArticles.length <= 1) return
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % heroArticles.length)
+    }, 8000)
+    return () => clearInterval(timer)
+  }, [heroArticles.length])
+
   const activeArticle: NewsItem = heroArticles[currentIndex] || articles[0]
 
   if (!activeArticle) return null
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setCurrentIndex((prev) => (prev === 0 ? heroArticles.length - 1 : prev - 1))
+  }
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setCurrentIndex((prev) => (prev + 1) % heroArticles.length)
+  }
 
   return (
     <section className="hero-section">
@@ -76,6 +95,54 @@ export const HeroBanner: React.FC = () => {
             alt={activeArticle.title}
             className="hero-image"
           />
+
+          {/* Prev/Next overlay controls */}
+          <button
+            onClick={handlePrev}
+            style={{
+              position: 'absolute',
+              left: '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'rgba(0, 0, 0, 0.45)',
+              color: '#fff',
+              borderRadius: '50%',
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backdropFilter: 'blur(4px)',
+              cursor: 'pointer'
+            }}
+            title="পূর্ববর্তী খবর"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          <button
+            onClick={handleNext}
+            style={{
+              position: 'absolute',
+              right: '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'rgba(0, 0, 0, 0.45)',
+              color: '#fff',
+              borderRadius: '50%',
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backdropFilter: 'blur(4px)',
+              cursor: 'pointer'
+            }}
+            title="পরবর্তী খবর"
+          >
+            <ChevronRight size={18} />
+          </button>
+
           {/* Carousel Dots */}
           <div
             className="hero-dots"
