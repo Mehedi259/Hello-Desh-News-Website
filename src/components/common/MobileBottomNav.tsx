@@ -236,7 +236,7 @@ export const MobileBottomNav: React.FC<{ onOpenInfoModal?: (type: 'about' | 'ads
                 </button>
 
                 <a
-                  href="http://46.225.103.236:3014"
+                  href="https://admin.hellodesh.com"
                   target="_blank"
                   rel="noreferrer"
                   className="quick-action-item admin-highlight"
